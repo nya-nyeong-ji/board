@@ -5,7 +5,7 @@
 SPRING JPA를 이용한 데이터 등록, 수정, 삭제, 조회를 구현
 
 # 2021/05/27<br>
-1. Controller<br><br>
+## 1. Controller<br><br>
 @Controller<br>
 컨트롤러임을 명시하는 어노테이션입니다.<br>
 MVC에서 컨트롤러로 명시된 클래스의 메서드들은 반환 값으로 템플릿 경로를 설정하거나, redirect를 해줘야 합니다.<br>
@@ -22,7 +22,7 @@ URL을 매핑해주는 어노테이션입니다.<br>
 HTTP Method에 맞는 어노테이션을 작성하면 됩니다.
    
 
-2. Service<br><br>
+## 2. Service<br><br>
 @Service<br>
    서비스 계층인 것을 명시하는 어노테이션입니다.<br><br>
    @AllArgsConstructor<br>
@@ -33,14 +33,14 @@ HTTP Method에 맞는 어노테이션을 작성하면 됩니다.
    선언된 메서드를 진행하는 동안 원자성, 일관성, 격리성, 지속성을 유지할 수록 합니다.
   
  
-3. Repository<br><br>
+## 3. Repository<br><br>
 인터페이스를 정의하고 JpaRepository 인터페이스를 상속받게 됩니다.<br>
    이 과정에서 Entity와 PK의 타입을 명시하게 됩니다.<br><br>
    위 Service에서 findById(), deleteById()등이 사용되었으나 repository에서 이를 확인할 수 없습니다<br>
    위 메서드들은 JpaRepository에 정의되어 있습니다.
    
 
-4. Entity<br><br>
+## 4. Entity<br><br>
 @NoArgsConstructor(access=AccessLevel.PROTECTED)<br>
    파라미터가 없는 기본 생성자를 생성하는 어노테이션입니다.<br>
    JPA를 사용하기 위해서는 기본 생성자가 필수입니다.<br>
@@ -66,7 +66,7 @@ HTTP Method에 맞는 어노테이션을 작성하면 됩니다.
    setter를 사용할 경우 안정성을 보장받을 수 없기 때문에 빌더패턴을 사용합니다.
    
 
-5. TimeEntity<br><br>
+## 5. TimeEntity<br><br>
 @MappedSuperClass<br>
    테이블을 매핑하지 않고 자식 클래스에게 매핑정보를 상속하기 위한 어노테이션입니다.<br><br>
    @EntityListeners(AuditingEntityListener.class)<br>
@@ -79,23 +79,23 @@ HTTP Method에 맞는 어노테이션을 작성하면 됩니다.
    Entity가 수정될 때 수정 일자를 주입하는 어노테이션입니다.
    
 
-6. @EnableJpaAuditing<br>
+## 6. @EnableJpaAuditing<br>
 JPA Auditing을 활성화 시키기 위해서는 Application에서 @EnableJpaAuditing 어노테이션을 추가해야 합니다.
    
 
-7. 이후 구현 방향성<br>
+## 7. 이후 구현 방향성<br>
 게시판에 필요한 다른 entity(ex. 회원, 댓글 등) 구현
 추가될 entity에 맞춰 필요한 기능들 추가
    
 
 # 2021/05/28<br>
-1. 댓글 entity 추가<br>
+## 1. 댓글 entity 추가<br>
 댓글 entity가 추가됨에 따라 필요한 dto, repository, service 등이 추가되었습니다.
    
-2. 기존 오류 수정<br>
+## 2. 기존 오류 수정<br>
 게시글 수정의 오류 수정 (/board/update.html에 있던 문제점 수정)
    
-3. 이후 구현 방향성<br>
+## 3. 이후 구현 방향성<br>
 페이징 추가<br>
    유저 혹은 멤버를 이용한 로그인 기능 추가<br>
    controller 완전 분리<br>
