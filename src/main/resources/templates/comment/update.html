@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Comment Update</title>
+</head>
+<body>
+<form th:action="@{'/post/' + ${commentDto.boardId} + '/comment/' + ${commentDto.id}}" method="post">
+    <input type="hidden" name="_method" value="put"/>
+    <input type="hidden" name="id" th:value="${commentDto.id}"/>
+    <input type="hidden" name="boardId" th:value="${commentDto.boardId}"/>
+    <input type="hidden" name="writer" th:value="${commentDto.writer}"/>
+
+    <textarea name="content" th:text="${commentDto.content}"></textarea><br>
+
+    <input type="submit" value="수정">
+</form>
+</body>
+</html>

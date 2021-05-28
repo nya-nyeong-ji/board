@@ -1,0 +1,40 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<table>
+    <thead>
+    <tr>
+        <th class = "one wide">아이디</th>
+        <th class = "ten wide">내용</th>
+        <th class = "two wide">날짜</th>
+        <th class = "two wide"></th><!-- 수정 -->
+        <th class = "two wide"></th><!-- 삭제 -->
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="comment : ${commentList}">
+        <td>
+            <span th:text = ${comment.writer}></span>
+        </td>
+        <td>
+            <span th:text = ${comment.content}></span>
+        </td>
+        <td>
+            <span th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
+        </td>
+        <td>
+            <a th:href="@{'/post/' + ${boardDto.id} + '/comment/' + ${comment.id}}">
+                <button>수정</button>
+            </a>
+        </td>
+        <td>
+            <form id="delete-comment-form" th:action="@{'/post/' + ${boardDto.id} + '/comment/' + ${comment.id}}" method="post">
+                <input type="hidden" name="_method" value="delete"/>
+                <button id="delete-comment-btn">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</html>

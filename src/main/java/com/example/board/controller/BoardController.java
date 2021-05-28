@@ -1,7 +1,9 @@
 package com.example.board.controller;
 
 import com.example.board.dto.BoardDto;
+import com.example.board.dto.CommentDto;
 import com.example.board.service.BoardService;
+import com.example.board.service.CommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BoardController {
     private BoardService boardService;
+    //추후 제거
+    private CommentService commentService;
 
     @GetMapping("/")
     public String list(Model model){
@@ -37,8 +41,11 @@ public class BoardController {
     @GetMapping("/post/{no}")
     public String detail(@PathVariable("no") Long no, Model model){
         BoardDto boardDto = boardService.getPost(no);
+        List<CommentDto> commentList = commentService.getCommentListByBoardId(no);
 
         model.addAttribute("boardDto", boardDto);
+        //추후 제거
+        model.addAttribute("commentList", commentList);
 
         return "board/detail.html";
     }
@@ -62,6 +69,7 @@ public class BoardController {
     @DeleteMapping("/post/{no}")
     public String delete(@PathVariable("no") Long id){
         boardService.deletePost(id);
+        commentService.deleteCommentByBoardId(id);
 
         return "redirect:/";
     }

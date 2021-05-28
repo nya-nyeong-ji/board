@@ -1,14 +1,8 @@
-# Spring Board
-
 #spring jpa를 이용하여 간단한 게시판 구현
 그렇기 때문에 css등의 디자인적 요소는 신경쓰지 않았습니다.
 
 #게시물을 이용한 등록, 수정, 삭제, 조회 기능
 SPRING JPA를 이용한 데이터 등록, 수정, 삭제, 조회를 구현
-
-#이후 구현 방향성
-게시판에 필요한 다른 entity(ex. 회원, 댓글 등) 구현
-추가될 entity에 맞춰 필요한 기능들 추가
 
 #2021/05/27
 1. Controller<br><br>
@@ -87,3 +81,24 @@ HTTP Method에 맞는 어노테이션을 작성하면 됩니다.
 
 6. @EnableJpaAuditing<br>
 JPA Auditing을 활성화 시키기 위해서는 Application에서 @EnableJpaAuditing 어노테이션을 추가해야 합니다.
+   
+
+7. 이후 구현 방향성<br>
+게시판에 필요한 다른 entity(ex. 회원, 댓글 등) 구현
+추가될 entity에 맞춰 필요한 기능들 추가
+   
+
+#2021/05/28
+1. 댓글 entity 추가<br>
+댓글 entity가 추가됨에 따라 필요한 dto, repository, service 등이 추가되었습니다.
+   
+2. 기존 오류 수정<br>
+게시글 수정의 오류 수정 (/board/update.html에 있던 문제점 수정)
+   
+3. 이후 구현 방향성<br>
+페이징 추가<br>
+   유저 혹은 멤버를 이용한 로그인 기능 추가<br>
+   controller 완전 분리<br>
+   (현재 게시물의 세부사항 조회와 댓글 리스트 조회를 한번에 호출해야 합니다.)<br>
+   (또한 게시물 삭제 시에 해당하는 댓글을 한번에 삭제해야 합니다.)<br>
+   (위 두가지 상황때문에 controller를 완벽하게 분리하지 못했습니다.)
