@@ -1,10 +1,10 @@
-#spring jpa를 이용하여 간단한 게시판 구현
+#spring jpa를 이용하여 간단한 게시판 구현<br>
 그렇기 때문에 css등의 디자인적 요소는 신경쓰지 않았습니다.
 
-#게시물을 이용한 등록, 수정, 삭제, 조회 기능
+#게시물을 이용한 등록, 수정, 삭제, 조회 기능<br>
 SPRING JPA를 이용한 데이터 등록, 수정, 삭제, 조회를 구현
 
-#2021/05/27
+#2021/05/27<br>
 1. Controller<br><br>
 @Controller<br>
 컨트롤러임을 명시하는 어노테이션입니다.<br>
@@ -88,7 +88,7 @@ JPA Auditing을 활성화 시키기 위해서는 Application에서 @EnableJpaAud
 추가될 entity에 맞춰 필요한 기능들 추가
    
 
-#2021/05/28
+#2021/05/28<br>
 1. 댓글 entity 추가<br>
 댓글 entity가 추가됨에 따라 필요한 dto, repository, service 등이 추가되었습니다.
    
