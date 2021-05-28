@@ -91,6 +91,10 @@ JPA Auditing을 활성화 시키기 위해서는 Application에서 @EnableJpaAud
 # 2021/05/28<br>
 ## 1. 댓글 entity 추가<br>
 댓글 entity가 추가됨에 따라 필요한 dto, repository, service 등이 추가되었습니다.
+
+## 2. @modify 사용<br>
+앞서 사용했던 JPA repository를 사용하여 삭제를 진행할 수 있지만 그렇게 될 경우 내부적으로 조회(select) 이후 삭제(delete)가 이루어진다는 정보를 얻었다.<br>
+댓글이 많아진 게시물이라면 문제가 성능에 문제가 생길 수 있기 때문에 @modify를 사용해 delete과정만을 진행합니다.
    
 ## 2. 기존 오류 수정<br>
 게시글 수정의 오류 수정 (/board/update.html에 있던 문제점 수정)
