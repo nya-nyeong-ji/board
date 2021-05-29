@@ -13,7 +13,6 @@ public class CommentController {
 
     CommentService commentService;
 
-    //추후 사용
 //    @GetMapping("/post/{no}/list")
 //    public String list(@PathVariable("no") Long no, Model model){
 //        List<CommentDto> commentList = commentService.getCommentListByBoardId(no);

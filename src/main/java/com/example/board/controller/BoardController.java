@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class BoardController {
     private BoardService boardService;
-    //추후 제거
     private CommentService commentService;
 
     @GetMapping("/")
