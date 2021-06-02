@@ -6,6 +6,7 @@
 </head>
 <body>
 <form th:action="@{'/post/' + ${commentDto.boardId} + '/comment/' + ${commentDto.id}}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <input type="hidden" name="_method" value="put"/>
     <input type="hidden" name="id" th:value="${commentDto.id}"/>
     <input type="hidden" name="boardId" th:value="${commentDto.boardId}"/>

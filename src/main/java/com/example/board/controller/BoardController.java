@@ -5,6 +5,8 @@ import com.example.board.dto.CommentDto;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ public class BoardController {
     private BoardService boardService;
     private CommentService commentService;
 
-    @GetMapping("/")
+    @GetMapping("/list")
     public String list(Model model){
         List<BoardDto> boardList = boardService.getPostList();
 
@@ -26,7 +28,17 @@ public class BoardController {
     }
 
     @GetMapping("/post")
-    public String write(){
+    public String write(Model model){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String id = "";
+
+        if(principal instanceof UserDetails){
+            id = ((UserDetails)principal).getUsername();
+        } else{
+            id = principal.toString();
+        }
+
+        model.addAttribute("id", id);
         return "board/write.html";
     }
 
@@ -34,16 +46,24 @@ public class BoardController {
     public String write(BoardDto boardDto){
         boardService.savePost(boardDto);
 
-        return "redirect:/";
+        return "redirect:/list";
     }
 
     @GetMapping("/post/{no}")
     public String detail(@PathVariable("no") Long no, Model model){
         BoardDto boardDto = boardService.getPost(no);
         List<CommentDto> commentList = commentService.getCommentListByBoardId(no);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String id = "";
 
+        if(principal instanceof UserDetails){
+            id = ((UserDetails)principal).getUsername();
+        } else{
+            id = principal.toString();
+        }
+
+        model.addAttribute("id", id);
         model.addAttribute("boardDto", boardDto);
-        //추후 제거
         model.addAttribute("commentList", commentList);
 
         return "board/detail.html";
@@ -62,7 +82,7 @@ public class BoardController {
     public String update(BoardDto boardDto){
         boardService.savePost(boardDto);
 
-        return "redirect:/";
+        return "redirect:/list";
     }
 
     @DeleteMapping("/post/{no}")
@@ -70,6 +90,6 @@ public class BoardController {
         boardService.deletePost(id);
         commentService.deleteCommentByBoardId(id);
 
-        return "redirect:/";
+        return "redirect:/list";
     }
 }

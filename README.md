@@ -118,3 +118,141 @@ entity만을 기준으로 controller를 분리하려 했던거이 문제였습�
 
 ## 2. 회원 추가<br>
 Spring Security를 이용하여 로그인 및 회원 기능을 수행해 보도록 하겠습니다.
+
+# 2021/06/02<br>
+이번엔 Spring Security를 이용해서 회원 로그인을 구현해 보았습니다.<br>
+Spring Security란?<br>
+보안 솔루션을 제공해주는 Spring 기반의 스프링 하위 프레임워크입니다.<br>
+보안 솔루션이 제공되기 때문에 보안 관련 로직을 짤 필요가 없어집니다.<br>
+
+## 1. SecurityConfig<br>
+Spring Security에 관련된 설정을 하기 위해서 설정 파일을 만들어야 합니다.<br>
+설정 파일은  WebSecurityConfigurerAdapter를 상속받아 구현합니다.<br><br>
+
+@EnableWebSecurity<br>
+Spring Security를 활성화 한다는 의미를 지닌 어노테이션입니다.<br><br>
+
+WebSecurityConfigurerAdapter<br>
+설정을 하기 위해 상속해야 하는 클래스입니다.<br><br>
+
+passwordEncorder()<br>
+BCryptPasswordEncoder는 Spring Security에서 제공하는 비밀번호 암호화 객체입니다.<br>
+service에서 비밀번호를 암호화할 수 있도록 Bean으로 등록합니다.<br><br>
+
+configure(WebSecurity web)<br>
+WebSecurity는 FilterChainProxy를 생성하는 필터입니다.<br>
+web.ignoring().antMathchers();<br>
+해당 경로의 파일들은 Spring Security가 무시할 수 있도록 설정합니다.<br>
+파일 기본 기준은 resources/static 디렉터리입니다.<br><br>
+
+configure(HttpSecurity http)<br>
+HTTP요청에 따라 접근을 제한합니다.<br>
+authorizeRequests()<br>
+메서드로 특정 경로를 지정하며 permitAll(), hasRole() 메서드로 역할(Role)에 따른 접근 설정을 잡아줍니다.<br>
+ex) anyRequest().authenticated()<br>
+모든 요청에 대해 인증된 사용자만 접근하도록 설정할 수 있습니다.<br><br>
+
+formlogin()<br>
+form 기반으로 인증하도록 합니다.<br>
+로그인 종보는 기본적으로 HttpSession을 이용합니다.<br>
+/login 경로로 접근하며, SpringSecurity에서 제공하는 로그인 form을 사용할 수 있습니다.<br>
+loginPage("/login")<br>
+기본적으로 제공되는 form이외에 커스텀 로그인 폼을 사용하고 싶다면 loginPage() 메서드를 사용합니다.<br>
+이 때 커스텀 로그인 form의 action 경로와 loginPage의 파라미터 경로가 일치해야 인증을 처리할 수 있습니다.<br>
+defaultSuccessUrl("/")<br>
+로그인 성공시에 이동되는 페이지를 지정합니다.<br>
+usernameParameter(""), passwordParameter("")<br>
+로그인 form에서 아이디는 name=username인 input을 기본으로 인식합니다.<br>
+위 메서드를 통해 파라미터 명을 변경할 수 있습니다.<br><br>
+
+logout()<br>
+로그아웃을 지원하는 메서드입니다.<br>
+WebSecurotyConfigurerAdapter를 사용할 때 자동적으로 적용됩니다.<br>
+기본적으로 "logout"에 접근하면 HTTP세션을 제거합니다.<br>
+logoutRequestMatcher(new AntPathRequestMatcher("/logout"))<br>
+로그아웃의 기본 URL을 다른 URL로 재정의 합니다.<br>
+incalidateHttpSession(true)<br>
+HTTP 세션을 초기화하는 작업입니다.<br><br>
+
+exceptionHandling().accessDeniedPage("/denied")<br>
+예외가 발생했을 시 exceptionHandling()메서드로 핸들링할 수 있습니다.<br><br>
+
+configure(AuthenticationManageBuilder auth)<br>
+Spring Security에서 모든 인증은 AuthenticationManaget를 통해 이루어지며 AuthenticationManager를 생성하기 위해서는 AuthenticationManagerBuilder를 사용합니다.<br>
+로그인 처리 즉, 인증을 위해서는 UserDetailService를 통해서 필요한 정보들을 가져와야 합니다.<br>
+이를 memberService에서 이를 처리합니다.<br>
+서비스 클래스에서 UserDetailService 인터페이스를 상속한 뒤에 loadUserByUsername()메서드를 구현하면 됩니다.<br><br>
+
+## 2. Controller
+   로그인, 로그아웃, 접근 거부 등을 다룬 MemberController를 추가했습니다.<br>
+
+UserDetails.getUsername()<br>
+게시물, 댓글을 작성할 때 작성자의 이름을 알기 위해 유저 정보를 가져옵니다.<br>
+위 Spring Security에서 username을 id로 설정했기 때문에 id에 대한 정보를 가져옵니다.<br><br>
+
+## 3. Service<br>
+   UserDetailsService를 상속합니다.<br><br>
+
+joinUser()<br>
+회원가입을 처리하는 메서드입니다.<br>
+예제의 메서드는 비밀번호를 암호화하여 저장합니다.<br><br>
+
+loadUserByUsername()<br>
+상세 정보를 조회하는 메서드입니다.<br>
+계정 정보와 권한을 갖는 userDetails 인터페이스를 반환해야 합니다.<br>
+매개 변수로서 로그인 시 입력한 아이디를 사용합니다.<br>
+기본적인 값으로 username을 사용합니다.<br>
+Spring Security 설정 단계에서 이 매개변수의 이름을 변경할 수 있습니다.<br><br>
+authorities.add(new SimpleGrantedAuthority());<br>
+역할을 부여하는 코드입니다.<br><br>
+new User()<br>
+UserDetails를 구현한 User를 반환합니다.<br>
+Id, Password, 권한 리스트가 담겨 있습니다.<br><br>
+
+check~Duplicate<br>
+중복검사를 위해 만든 메서드입니다.<br>
+예제에서는 id와 nickname으로 중복여부를 검사하였습니다.<br>
+
+## 4. Role.java<br>
+   사용할 역할들을 모아놓은 Enum객체입니다.<br><br>
+
+## 5. Repository<br>
+   existsBy~()<br>
+   Service에서 중복검사를 진행하기 위해 정의되었습니다.<br><br>
+
+## 6. Entity<br>
+   다른 Entity와 차이는 거의 없습니다.<br>
+   단 id를 직접 입력하기 때문에 자동생성을 하지 않습니다.<br><br>
+
+## 7. Dto<br>
+   @Valid를 이용하여 유효성을 검사합니다.<br>
+   각각에서 요구하는 형식을 만족하지 못할 시에 에러메시지를 반환합니다.<br><br>
+
+@NotBlank(message = "")<br>
+공백을 허용하지 않습니다.<br><br>
+@Email(message = "")<br>
+입력값이 이메일 형식을 띄어야 합니다.<br><br>
+@Pattern(regexp="", message="")<br>
+입력값에 정규식을 적용하여 검사할 수 있습니다.<br><br>
+
+## 8. html
+   sec:authorize를 사용하여 사용자의 Role에 따라 보이는 메뉴를 다르게 합니다.<br><br>
+   isAnonymous()<br>
+   익명의 사용자일 경우 노출됩니다.<br>
+   isAuthenticated()<br>
+   인증된 사용자의 경우 노출됩니다.<br>
+   hasRole()<br>
+   특정 역할을 가진 사용자에 대해 노출합니다.<br><br>
+   input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"<br>
+   form에 히든 타입으로 crsf토큰 값을 넘겨줍니다.<br>
+   Spring Security가 적용될 경우 POST방식으로 보내는 모든 데이터는 crsf토큰 값이 필요합니다.<br><br>
+   input type="text" name="id" placeholder="ID를 입력해주세요"<br>
+   로그인 시 아이디의 name은 username 혹은 Spring Security에서 설정된 값이어야 합니다.<br>
+   예제의 경우 id로 지정되었습니다.<br>
+   
+## 9. 이후 구현 방향<br>
+ 1. 게시물, 댓글의 페이징 및 검색기 능 추가<br>
+ 2. 게시물, 댓긓의 추천 기능 추가<br>
+ 3. 게시물, 댓글의 정렬 기능 추가<br><br>
+
+최종적으로 배포를 목표로 하고 있습니다.
