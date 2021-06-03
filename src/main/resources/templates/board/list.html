@@ -38,5 +38,20 @@
         </tbody>
     </table>
 
+    <div>
+    <span th:each="pageNum : ${pageList}" th:inline="text">
+        <a th:href="@{'/list?page=' + ${pageNum} + '&keyword=' + ${keyword}}">[[${pageNum}]]</a>
+    </span>
+    </div>
+
+    <!-- 검색 form -->
+    <form action="/list" method="GET">
+        <div>
+            <input name="keyword" type="text" placeholder="검색어를 입력해주세요">
+        </div>
+
+        <button>검색하기</button>
+    </form>
+
 </body>
 </html>

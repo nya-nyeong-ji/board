@@ -13,15 +13,6 @@ public class CommentController {
 
     CommentService commentService;
 
-//    @GetMapping("/post/{no}/list")
-//    public String list(@PathVariable("no") Long no, Model model){
-//        List<CommentDto> commentList = commentService.getCommentListByBoardId(no);
-//
-//        model.addAttribute("commentList", commentList);
-//
-//        return "comment/list.html";
-//    }
-
     @PostMapping("/post/{no}/comment")
     public String write(CommentDto commentDto){
         commentService.saveComment(commentDto);
@@ -50,12 +41,5 @@ public class CommentController {
         commentService.deleteComment(id);
 
         return "redirect:/post/{boardNo}";
-    }
-
-    @DeleteMapping("/post/{boardNo}")
-    public String deleteByBoardId(@PathVariable("boardNo") Long id){
-        commentService.deleteCommentByBoardId(id);
-
-        return "redirect:/";
     }
 }

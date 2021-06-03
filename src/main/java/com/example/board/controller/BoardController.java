@@ -20,10 +20,24 @@ public class BoardController {
     private CommentService commentService;
 
     @GetMapping("/list")
-    public String list(Model model){
-        List<BoardDto> boardList = boardService.getPostList();
+    public String list(Model model, @RequestParam(value = "page",defaultValue = "1") Integer pageNum, @RequestParam(value = "keyword", defaultValue = "") String keyword){
+        List<BoardDto> boardList = boardService.getPostlist(pageNum, keyword);
+        Integer[] pageList = boardService.getPageList(pageNum, keyword);
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = "";
+
+        if(principal instanceof UserDetails){
+            username = ((UserDetails)principal).getUsername();
+        } else{
+            username = principal.toString();
+        }
 
         model.addAttribute("boardList", boardList);
+        model.addAttribute("pageList", pageList);
+        model.addAttribute("username", username);
+        model.addAttribute("keyword", keyword);
+
         return "board/list.html";
     }
 
@@ -50,9 +64,11 @@ public class BoardController {
     }
 
     @GetMapping("/post/{no}")
-    public String detail(@PathVariable("no") Long no, Model model){
+    public String detail(@PathVariable("no") Long no, @RequestParam(value="page", defaultValue = "1") Integer pageNum, Model model){
         BoardDto boardDto = boardService.getPost(no);
-        List<CommentDto> commentList = commentService.getCommentListByBoardId(no);
+        List<CommentDto> commentList = commentService.getCommentListByBoardId(no, pageNum);
+        Integer[] pageList = commentService.getPageList(no, pageNum);
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String id = "";
 
@@ -65,6 +81,7 @@ public class BoardController {
         model.addAttribute("id", id);
         model.addAttribute("boardDto", boardDto);
         model.addAttribute("commentList", commentList);
+        model.addAttribute("pageList", pageList);
 
         return "board/detail.html";
     }

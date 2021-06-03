@@ -235,20 +235,20 @@ check~Duplicate<br>
 @Pattern(regexp="", message="")<br>
 입력값에 정규식을 적용하여 검사할 수 있습니다.<br><br>
 
-## 8. html
-   sec:authorize를 사용하여 사용자의 Role에 따라 보이는 메뉴를 다르게 합니다.<br><br>
-   isAnonymous()<br>
-   익명의 사용자일 경우 노출됩니다.<br>
-   isAuthenticated()<br>
-   인증된 사용자의 경우 노출됩니다.<br>
-   hasRole()<br>
-   특정 역할을 가진 사용자에 대해 노출합니다.<br><br>
-   input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"<br>
-   form에 히든 타입으로 crsf토큰 값을 넘겨줍니다.<br>
-   Spring Security가 적용될 경우 POST방식으로 보내는 모든 데이터는 crsf토큰 값이 필요합니다.<br><br>
-   input type="text" name="id" placeholder="ID를 입력해주세요"<br>
-   로그인 시 아이디의 name은 username 혹은 Spring Security에서 설정된 값이어야 합니다.<br>
-   예제의 경우 id로 지정되었습니다.<br>
+## 8. html<br>
+sec:authorize를 사용하여 사용자의 Role에 따라 보이는 메뉴를 다르게 합니다.<br><br>
+isAnonymous()<br>
+익명의 사용자일 경우 노출됩니다.<br>
+isAuthenticated()<br>
+인증된 사용자의 경우 노출됩니다.<br>
+hasRole()<br>
+특정 역할을 가진 사용자에 대해 노출합니다.<br><br>
+input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"<br>
+form에 히든 타입으로 crsf토큰 값을 넘겨줍니다.<br>
+Spring Security가 적용될 경우 POST방식으로 보내는 모든 데이터는 crsf토큰 값이 필요합니다.<br><br>
+input type="text" name="id" placeholder="ID를 입력해주세요"<br>
+로그인 시 아이디의 name은 username 혹은 Spring Security에서 설정된 값이어야 합니다.<br>
+예제의 경우 id로 지정되었습니다.<br>
    
 ## 9. 이후 구현 방향<br>
  1. 게시물, 댓글의 페이징 및 검색기 능 추가<br>
@@ -256,3 +256,37 @@ check~Duplicate<br>
  3. 게시물, 댓글의 정렬 기능 추가<br><br>
 
 최종적으로 배포를 목표로 하고 있습니다.
+
+# 2021/06/02<br>
+## 1. Controller<br>
+CommentController에 request mapping에 오류가 있어 이를 수정했습니다.<br>
+BoardController의 경우 검색 기능과 페이징 기능의 추가로 인해 몇가지 메소드들이 변경 및 추가되었습니다.<br><br>
+@RequestParam(value="", defaultValue="")<br>
+단일 파라미터를 전달받을 때 사용하는 어노테이션입니다.<br>
+이 어노테이션을 사용하여 검색과 페이징에 필요한 정보(pageNum, keyword)를 전달받습니다.<br>
+defaultValue값을 url을 추가할 필요 없이 기존의 boardList를 수정하는 것으로 페이징과 검색을 동시에 진행할 수 있습니다.<br><br>
+
+## 2. Service<br>
+getPostList(), getPageList()를 추가했습니다.<br>
+Controller에서 언급되었듯이 pageNum, keyword의 초기값이 지정되어있으며 이를 Service로 전달했을 때 두 메서드는 두 값이 지정된 초깃값일때와 아닐 때로 구분하여 다른 과정을 메서드를 수행합니다.<br><br>
+
+## 3. Repository<br>
+JpaRepository Syntax의 복잡도가 올라갔습니다.<br>
+이번에 사용된 메소드(countByTitleContainingOrContentContaining())의 경우 Or, Containing등의 문법을 추가로 사용하게 되었습니다.<br>
+이처럼 JpaRepository의 경우 메서드명의 By 이후는 SQL문의 Where조건절에 해당하는 문법이 나타나게 됩니다.<br>
+위 예시로 살펴보면 Title에 포함(Containing)되어 있거나(Or) Content에 포함(Containing)되어 있는 갯수를 구하는 것이 됩니다.<br>
+좀 더 많은 문법사용법을 원하신다면 [여기][sql_link] 를 이용하시면 됩니다.
+
+[sql_link]: https://docs.spring.io/spring-data/jpa/docs/1.10.1.RELEASE/reference/html/#jpa.sample-app.finders.strategies
+
+## 4.html<br>
+검색 기능은 form을 사용하여 keyword를 전달하는 방식을 채택했습니다.<br>
+페이지의 경우 server로 부터 페이징 번호 리스트 pageList변수를 받아와 출력합니다.<br>
+또한 각 번호를 누를 경우 해당 페이지 번호를 server로 전달합니다.<br><br>
+
+## 5. 이후 구현 방향<br>
+이번에 추가된 검색 기능과 페이징 기능을 작성하는데 있어 Controller와 Service를 기능을 정상적으로 분리하지 못한 것 같습니다.<br>
+이후 개발에선 이 부분을 최우선적으로 수정하겟습니다.<br>
+1. 추천 기능 추가<br>
+2. 검색 기능에 검색 조건 추가<br>
+3. 정렬기능 추가<br>
