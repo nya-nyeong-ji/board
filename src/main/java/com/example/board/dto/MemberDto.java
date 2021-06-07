@@ -40,10 +40,12 @@ public class MemberDto {
     }
 
     @Builder
-    public MemberDto(String id, String nickname, String email, String password) {
+    public MemberDto(String id, String nickname, String email, String password, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 }

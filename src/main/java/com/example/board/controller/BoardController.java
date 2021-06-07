@@ -2,8 +2,10 @@ package com.example.board.controller;
 
 import com.example.board.dto.BoardDto;
 import com.example.board.dto.CommentDto;
+import com.example.board.dto.MemberDto;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
+import com.example.board.service.MemberService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +20,22 @@ import java.util.List;
 public class BoardController {
     private BoardService boardService;
     private CommentService commentService;
+    private MemberService memberService;
 
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page",defaultValue = "1") Integer pageNum, @RequestParam(value = "keyword", defaultValue = "") String keyword){
-        List<BoardDto> boardList = boardService.getPostlist(pageNum, keyword);
-        Integer[] pageList = boardService.getPageList(pageNum, keyword);
+        List<BoardDto> boardList;
+        Integer[] pageList;
+
+        if (keyword.equals("")){
+            boardList = boardService.getPostList(pageNum);
+            pageList = boardService.getPageList(pageNum);
+        }
+
+        else{
+            boardList = boardService.getPostlist(pageNum, keyword);
+            pageList = boardService.getPageList(pageNum,keyword);
+        }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = "";
@@ -82,6 +95,23 @@ public class BoardController {
         model.addAttribute("boardDto", boardDto);
         model.addAttribute("commentList", commentList);
         model.addAttribute("pageList", pageList);
+
+        return "board/detail.html";
+    }
+
+    @GetMapping("/post/{no}/recommend")
+    public String recommend(@PathVariable("no") Long no, Model model){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String id = "";
+
+        if(principal instanceof UserDetails){
+            id = ((UserDetails)principal).getUsername();
+        } else{
+            id = principal.toString();
+        }
+
+        MemberDto member = memberService.getMemberById(id);
+
 
         return "board/detail.html";
     }

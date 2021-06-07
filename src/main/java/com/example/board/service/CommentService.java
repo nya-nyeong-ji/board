@@ -71,7 +71,6 @@ public class CommentService {
     @Transactional
     public List<CommentDto> getCommentListByBoardId(Long boardId, Integer pageNum) {
         Pageable paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
-
         Page<CommentEntity> page = commentRepository.findAllByBoardId(boardId, paging);
 
         List<CommentEntity> commentEntities = page.getContent();

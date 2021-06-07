@@ -55,6 +55,17 @@ public class MemberService implements UserDetailsService {
     public boolean checkNicknameDuplicate(MemberDto memberDto){
         return memberRepository.existsByNickname(memberDto.getNickname());
     }
+    
+    @Transactional
+    public MemberDto getMemberById(String id){
+        MemberEntity member = memberRepository.getById(id);
+        return MemberDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .build();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -67,5 +78,18 @@ public class MemberService implements UserDetailsService {
 
         authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
         return new User(userEntity.getId(), userEntity.getPassword(), authorities);
+    }
+
+    @Transactional
+    public MemberDto getMember(String id){
+        MemberEntity member = memberRepository.getById(id);
+        return MemberDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .createdDate(member.getCreatedDate())
+                .modifiedDate(member.getModifiedDate())
+                .build();
     }
 }

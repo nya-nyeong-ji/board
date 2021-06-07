@@ -8,6 +8,7 @@
         <th class = "two wide">날짜</th>
         <th class = "two wide"></th><!-- 수정 -->
         <th class = "two wide"></th><!-- 삭제 -->
+        <th class = "two wide"></th><!-- 추천 -->
     </tr>
     </thead>
 
@@ -31,6 +32,12 @@
             <form id="delete-comment-form" th:action="@{'/post/' + ${boardDto.id} + '/comment/' + ${comment.id}}" method="post">
                 <input type="hidden" name="_method" value="delete"/>
                 <button id="delete-comment-btn">삭제</button>
+            </form>
+        </td>
+        <td>
+            <form id="recommend-form" th:action="@{'/post/' + ${boardDto.id} + '/recommend/' + ${comment.id}}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button id="recommend-btn">추천</button>
             </form>
         </td>
     </tr>
