@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 
@@ -25,6 +26,9 @@ public class BoardEntity extends TimeEntity{
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @Formula("(select count(1) from likes l where l.board_id = id)")
+    private Long totalLike;
 
     @Builder
     public BoardEntity(Long id, String writer, String title, String content) {

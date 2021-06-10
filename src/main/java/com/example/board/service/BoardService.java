@@ -62,7 +62,7 @@ public class BoardService {
 
     @Transactional
     public List<BoardDto> getPostList(Integer pageNum){
-        Page<BoardEntity> page = boardRepository.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate")));
+        Page<BoardEntity> page = boardRepository.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike")));
 
         List<BoardEntity> boardEntities = page.getContent();
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -76,7 +76,7 @@ public class BoardService {
 
     @Transactional
     public List<BoardDto> getPostlist(Integer pageNum, String keyword) {
-        Page<BoardEntity> page = boardRepository.findAllByTitleContainingOrContentContaining(keyword, keyword, PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate")));
+        Page<BoardEntity> page = boardRepository.findAllByTitleContainingOrContentContaining(keyword, keyword, PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike")));
 
         List<BoardEntity> boardEntities = page.getContent();
         List<BoardDto> boardDtoList = new ArrayList<>();

@@ -10,5 +10,9 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     Long countByTitleContainingOrContentContaining(String keyword, String keyword1);
 
-    Page<BoardEntity> findAllByTitleContainingOrContentContaining(String keyword1, String keyword2, Pageable paging);
+    Page<BoardEntity> findAllByTitleContainingOrContentContaining(String title, String content, Pageable paging);
+
+    Page<BoardEntity> findAllByTitleContaining(String title, Pageable paging);
+
+    Page<BoardEntity> findAllByContentContaining(String content, Pageable paging);
 }
