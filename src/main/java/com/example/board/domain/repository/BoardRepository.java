@@ -8,7 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
-    Long countByTitleContainingOrContentContaining(String keyword, String keyword1);
+    Long countByTitleContainingOrContentContaining(String keyword1, String keyword2);
+
+    Long countByTitleContaining(String keyword);
+
+    Long countByContentContaining(String keyword);
 
     Page<BoardEntity> findAllByTitleContainingOrContentContaining(String title, String content, Pageable paging);
 

@@ -69,8 +69,10 @@ public class CommentService {
     private static final int PAGE_POST_COUNT = 4;       // 한 페이지에 존재하는 게시글 수
 
     @Transactional
-    public List<CommentDto> getCommentListByBoardId(Long boardId, Integer pageNum) {
-        Pageable paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
+    public List<CommentDto> getCommentListByBoardId(Long boardId, Integer pageNum, String type) {
+        Pageable paging;
+        if (type.equals("date")) paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
+        else paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike"));
         Page<CommentEntity> page = commentRepository.findAllByBoardId(boardId, paging);
 
         List<CommentEntity> commentEntities = page.getContent();

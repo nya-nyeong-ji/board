@@ -27,7 +27,7 @@ public class BoardEntity extends TimeEntity{
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Formula("(select count(1) from likes l where l.board_id = id)")
+    @Formula("(select count(1) from board_likes as l where l.board_id = id)")
     private Long totalLike;
 
     @Builder

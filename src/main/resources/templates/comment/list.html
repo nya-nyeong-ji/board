@@ -1,5 +1,12 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-
+<form th:action="'/post/' + ${boardDto.id}" method="get">
+    <input type="hidden" name="keyword" th:value="${keyword}"/>
+    <select name="type" onchange="this.form.submit()">
+        <option value="" disabled selected>정렬 순서</option>
+        <option value="date">최근 날짜순</option>
+        <option value="like">추천 순서</option>
+    </select>
+</form>
 <table>
     <thead>
     <tr>
@@ -35,7 +42,7 @@
             </form>
         </td>
         <td>
-            <form id="recommend-form" th:action="@{'/post/' + ${boardDto.id} + '/recommend/' + ${comment.id}}" method="post">
+            <form id="recommend-form" th:action="@{'/post/' + ${boardDto.id} + '/like/' + ${comment.id}}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button id="recommend-btn">추천</button>
             </form>

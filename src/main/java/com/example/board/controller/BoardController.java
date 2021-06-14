@@ -23,18 +23,18 @@ public class BoardController {
     private MemberService memberService;
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page",defaultValue = "1") Integer pageNum, @RequestParam(value = "keyword", defaultValue = "") String keyword){
+    public String list(Model model, @RequestParam(value = "page",defaultValue = "1") Integer pageNum, @RequestParam(value = "keyword", defaultValue = "") String keyword, @RequestParam(value = "search_type", defaultValue = "both") String searchType, @RequestParam(value = "type", defaultValue = "date") String type){
         List<BoardDto> boardList;
         Integer[] pageList;
 
         if (keyword.equals("")){
-            boardList = boardService.getPostList(pageNum);
+            boardList = boardService.getPostList(pageNum, type);
             pageList = boardService.getPageList(pageNum);
         }
 
         else{
-            boardList = boardService.getPostlist(pageNum, keyword);
-            pageList = boardService.getPageList(pageNum,keyword);
+            boardList = boardService.getPostlist(pageNum, searchType, keyword, type);
+            pageList = boardService.getPageList(pageNum, searchType, keyword);
         }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -77,9 +77,9 @@ public class BoardController {
     }
 
     @GetMapping("/post/{no}")
-    public String detail(@PathVariable("no") Long no, @RequestParam(value="page", defaultValue = "1") Integer pageNum, Model model){
+    public String detail(@PathVariable("no") Long no, @RequestParam(value="page", defaultValue = "1") Integer pageNum, @RequestParam(value = "type", defaultValue = "date") String type, Model model){
         BoardDto boardDto = boardService.getPost(no);
-        List<CommentDto> commentList = commentService.getCommentListByBoardId(no, pageNum);
+        List<CommentDto> commentList = commentService.getCommentListByBoardId(no, pageNum, type);
         Integer[] pageList = commentService.getPageList(no, pageNum);
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -95,23 +95,6 @@ public class BoardController {
         model.addAttribute("boardDto", boardDto);
         model.addAttribute("commentList", commentList);
         model.addAttribute("pageList", pageList);
-
-        return "board/detail.html";
-    }
-
-    @GetMapping("/post/{no}/recommend")
-    public String recommend(@PathVariable("no") Long no, Model model){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String id = "";
-
-        if(principal instanceof UserDetails){
-            id = ((UserDetails)principal).getUsername();
-        } else{
-            id = principal.toString();
-        }
-
-        MemberDto member = memberService.getMemberById(id);
-
 
         return "board/detail.html";
     }

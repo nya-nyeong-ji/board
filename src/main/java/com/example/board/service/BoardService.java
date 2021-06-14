@@ -6,6 +6,7 @@ import com.example.board.dto.BoardDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -61,8 +62,10 @@ public class BoardService {
     private static final int PAGE_POST_COUNT = 4;       // 한 페이지에 존재하는 게시글 수
 
     @Transactional
-    public List<BoardDto> getPostList(Integer pageNum){
-        Page<BoardEntity> page = boardRepository.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike")));
+    public List<BoardDto> getPostList(Integer pageNum, String type){
+        Page<BoardEntity> page;
+        if (type.equals("date")) page = boardRepository.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate")));
+        else page = boardRepository.findAll(PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike")));
 
         List<BoardEntity> boardEntities = page.getContent();
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -75,8 +78,16 @@ public class BoardService {
     }
 
     @Transactional
-    public List<BoardDto> getPostlist(Integer pageNum, String keyword) {
-        Page<BoardEntity> page = boardRepository.findAllByTitleContainingOrContentContaining(keyword, keyword, PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike")));
+    public List<BoardDto> getPostlist(Integer pageNum, String searchType, String keyword, String type) {
+        Page<BoardEntity> page;
+        Pageable paging;
+
+        if (type.equals("date")) paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
+        else paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike"));
+
+        if (searchType.equals("title")) page = boardRepository.findAllByTitleContaining(keyword, paging);
+        else if (searchType.equals("content")) page = boardRepository.findAllByContentContaining(keyword, paging);
+        else page = boardRepository.findAllByTitleContainingOrContentContaining(keyword, keyword, paging);
 
         List<BoardEntity> boardEntities = page.getContent();
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -94,8 +105,18 @@ public class BoardService {
     }
 
     @Transactional
-    public Long getBoardCountByTitleContaining(String keyword){
+    public Long getBoardCountByBoth(String keyword){
         return  boardRepository.countByTitleContainingOrContentContaining(keyword, keyword);
+    }
+
+    @Transactional
+    public Long getBoardCountByTitleContaining(String keyword){
+        return  boardRepository.countByTitleContaining(keyword);
+    }
+
+    @Transactional
+    public Long getBoardCountByContentContaining(String keyword){
+        return  boardRepository.countByContentContaining(keyword);
     }
 
     public Integer[] getPageList(Integer curPageNum) {
@@ -123,11 +144,15 @@ public class BoardService {
         return pageList;
     }
 
-    public Integer[] getPageList(Integer curPageNum, String keyword) {
+    public Integer[] getPageList(Integer curPageNum, String searchType, String keyword) {
         Integer[] pageList = new Integer[BLOCK_PAGE_NUM_COUNT];
 
         // 총 게시글 갯수
-        Double postsTotalCount = Double.valueOf(this.getBoardCountByTitleContaining(keyword));
+        Double postsTotalCount;
+
+        if (searchType.equals("title")) postsTotalCount = Double.valueOf(this.getBoardCountByTitleContaining(keyword));
+        else if (searchType.equals("content")) postsTotalCount = Double.valueOf(this.getBoardCountByContentContaining(keyword));
+        else postsTotalCount = Double.valueOf(this.getBoardCountByBoth(keyword));
 
         // 총 게시글 기준으로 계산한 마지막 페이지 번호 계산 (올림으로 계산)
         Integer totalLastPageNum = (int)(Math.ceil((postsTotalCount/PAGE_POST_COUNT)));

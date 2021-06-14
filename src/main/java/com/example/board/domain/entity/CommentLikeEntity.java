@@ -10,8 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "Recommend")
-public class RecommendEntity {
+@Table(name = "comment_likes")
+public class CommentLikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +23,7 @@ public class RecommendEntity {
     private MemberEntity member;
 
     @Builder
-    public RecommendEntity(Long id, CommentEntity comment, MemberEntity member){
+    public CommentLikeEntity(Long id, CommentEntity comment, MemberEntity member){
         this.id = id;
         this.comment = comment;
         this.member = member;
