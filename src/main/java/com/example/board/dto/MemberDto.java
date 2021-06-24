@@ -27,6 +27,8 @@ public class MemberDto {
     @Pattern(regexp=".{8,20}", message = "비밀번호는 8자 ~ 20자의 비밀번호여야 합니다.")
     private String password;
 
+    private String auth;
+
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -36,15 +38,17 @@ public class MemberDto {
                 .nickname(nickname)
                 .email(email)
                 .password(password)
+                .auth(auth)
                 .build();
     }
 
     @Builder
-    public MemberDto(String id, String nickname, String email, String password, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public MemberDto(String id, String nickname, String email, String password, String auth, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.auth = auth;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }

@@ -8,8 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -65,4 +68,23 @@ public class MemberController {
     //접근 거부 페이지
     @GetMapping("/denied")
     public String dispDenied(){return "member/denied";}
+
+    //관리자 페이지
+    @GetMapping("/admin")
+    public String disAdmin(Model model, @RequestParam(value = "page", defaultValue = "1") Integer pageNum){
+        List<MemberDto> memberList = memberService.getMemberList(pageNum);
+        Integer[] pageList = memberService.getPageList(pageNum);
+
+        model.addAttribute("memberList", memberList);
+        model.addAttribute("pageList", pageList);
+
+        return "member/admin";
+    }
+
+    @PutMapping("/admin")
+    public String update(MemberDto memberDto){
+        memberService.joinUser(memberDto);
+
+        return "redirect:/";
+    }
 }

@@ -2,7 +2,6 @@ package com.example.board.controller;
 
 import com.example.board.dto.BoardDto;
 import com.example.board.dto.CommentDto;
-import com.example.board.dto.MemberDto;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
 import com.example.board.service.MemberService;
@@ -37,18 +36,8 @@ public class BoardController {
             pageList = boardService.getPageList(pageNum, searchType, keyword);
         }
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = "";
-
-        if(principal instanceof UserDetails){
-            username = ((UserDetails)principal).getUsername();
-        } else{
-            username = principal.toString();
-        }
-
         model.addAttribute("boardList", boardList);
         model.addAttribute("pageList", pageList);
-        model.addAttribute("username", username);
         model.addAttribute("keyword", keyword);
 
         return "board/list.html";
@@ -101,6 +90,8 @@ public class BoardController {
 
     @GetMapping("/post/edit/{no}")
     public String edit(@PathVariable("no") Long no, Model model){
+        //2021/06/23 아이디가 같은지 확인하는 절차 추가
+        //관리자인지 확인하는 절차
         BoardDto boardDto = boardService.getPost(no);
 
         model.addAttribute("boardDto", boardDto);
@@ -117,6 +108,8 @@ public class BoardController {
 
     @DeleteMapping("/post/{no}")
     public String delete(@PathVariable("no") Long id){
+        //2021/06/23 아이디가 같은지 확인하는 절차 추가
+        //관리자인지 확인하는 절차
         boardService.deletePost(id);
         commentService.deleteCommentByBoardId(id);
 

@@ -24,11 +24,15 @@ public class MemberEntity extends TimeEntity{
     @Column(length = 100, nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String auth;
+
     @Builder
-    public MemberEntity(String id, String nickname, String email, String password) {
+    public MemberEntity(String id, String nickname, String email, String password, String auth) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.auth =  auth;
     }
 }

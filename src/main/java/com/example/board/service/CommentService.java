@@ -66,13 +66,13 @@ public class CommentService {
     }
 
     private static final int BLOCK_PAGE_NUM_COUNT = 5;  // 블럭에 존재하는 페이지 번호 수
-    private static final int PAGE_POST_COUNT = 4;       // 한 페이지에 존재하는 게시글 수
+    private static final int PAGE_COMMENT_COUNT = 4;       // 한 페이지에 존재하는 게시글 수
 
     @Transactional
     public List<CommentDto> getCommentListByBoardId(Long boardId, Integer pageNum, String type) {
         Pageable paging;
-        if (type.equals("date")) paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
-        else paging = PageRequest.of(pageNum - 1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "totalLike"));
+        if (type.equals("date")) paging = PageRequest.of(pageNum - 1, PAGE_COMMENT_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
+        else paging = PageRequest.of(pageNum - 1, PAGE_COMMENT_COUNT, Sort.by(Sort.Direction.DESC, "totalLike"));
         Page<CommentEntity> page = commentRepository.findAllByBoardId(boardId, paging);
 
         List<CommentEntity> commentEntities = page.getContent();
@@ -99,7 +99,7 @@ public class CommentService {
         if (commentsTotalCount == 0) return pageList;
 
         // 총 게시글 기준으로 계산한 마지막 페이지 번호 계산 (올림으로 계산)
-        Integer totalLastPageNum = (int)(Math.ceil((commentsTotalCount/PAGE_POST_COUNT)));
+        Integer totalLastPageNum = (int)(Math.ceil((commentsTotalCount/PAGE_COMMENT_COUNT)));
 
         // 페이지 시작 번호 조정
         curPageNum = (curPageNum <= 3) ? 1 : curPageNum - 2;

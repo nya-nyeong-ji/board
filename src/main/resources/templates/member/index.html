@@ -11,5 +11,6 @@
 <a sec:authorize="isAuthenticated()" th:href="@{/logout}">로그아웃</a>
 <a sec:authorize="isAnonymous()" th:href="@{/signup}">회원가입</a>
 <a sec:authorize="isAuthenticated()" th:href="@{/list}">게시판 이동</a>
+<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">관리자 페이지</a>
 </body>
 </html>

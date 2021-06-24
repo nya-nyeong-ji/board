@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>id</th>
+        <th>닉네임</th>
+        <th>이메일</th>
+        <th>가입일</th>
+        <th>권한</th>
+        <th>권한 변경</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="member : ${memberList}">
+        <td>
+            <span th:text="${member.id}"></span>
+        </td>
+        <td>
+            <span th:text="${member.nickname}"></span>
+        </td>
+        <td>
+            <span th:text="${member.email}"></span>
+        </td>
+        <td>
+            <span th:text="${#temporals.format(member.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
+        </td>
+        <td>
+            <span th:text="${member.auth}"></span>
+        </td>
+        <form action="/admin" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="_method" value="put"/>
+                <input type="hidden" name="id" th:value="${member.id}"/>
+                <input type="hidden" name="nickname" th:value="${member.nickname}"/>
+                <input type="hidden" name="password" th:value="${member.password}"/>
+                <input type="hidden" name="email" th:value="${member.email}"/>
+            <td>
+                <select th:disabled="${#authentication.name.equals(member.id)}" name="auth">
+                    <option value="" disabled selected>회원 권한</option>
+                    <option value="member">회원</option>
+                    <option value="ban">밴</option>
+                    <option value="admin">관리자</option>
+                </select>
+            </td>
+            <td>
+                <input type="submit" th:disabled="${#authentication.name.equals(member.id)}" value="수정">
+            </td>
+        </form>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+    <span th:each="pageNum : ${pageList}" th:inline="text">
+        <a th:href="@{'/list?page=' + ${pageNum} + '&keyword=' + ${keyword}}">[[${pageNum}]]</a>
+    </span>
+</div>
+</body>
+</html>
